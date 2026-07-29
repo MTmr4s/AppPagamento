@@ -11,116 +11,89 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
 :root{
-  --paper:#EAF0E3;
-  --line:#B7CAAC;
-  --ink:#2B2A24;
-  --ink-soft:#73715F;
-  --card:#F7F5EC;
-  --stamp:#B23A2E;
+  --paper:#EAF0E3; --line:#B7CAAC; --ink:#2B2A24;
+  --ink-soft:#73715F; --card:#F7F5EC; --red:#B23A2E; --green:#2E7D32;
 }
-
 *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
 html,body{
   margin:0; padding:0; min-height:100vh;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 35px,
-      rgba(183,202,172,0.55) 36px
-    ),
-    var(--paper);
-  color:var(--ink);
-  font-family:-apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-  overscroll-behavior:none;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 35px, rgba(183,202,172,0.55) 36px), var(--paper);
+  color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif; overscroll-behavior:none;
 }
-
-.margin-line{
-  position:fixed; top:0; bottom:0; left:18px; width:1px;
-  background:rgba(178,58,46,0.28); z-index:0; pointer-events:none;
-}
-
+.margin-line{ position:fixed; top:0; bottom:0; left:18px; width:1px; background:rgba(178,58,46,0.28); z-index:0; pointer-events:none; }
 .app{ position:relative; z-index:1; padding-left:30px; padding-right:18px; max-width:480px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; }
 
 header{
   position:sticky; top:0; z-index:5;
-  padding-top:calc(22px + env(safe-area-inset-top));
-  padding-bottom:14px;
-  padding-left:30px; padding-right:18px;
-  margin-left:-30px; margin-right:-18px;
-  background:linear-gradient(var(--paper) 80%, transparent);
+  padding-top:calc(22px + env(safe-area-inset-top)); padding-bottom:14px;
+  padding-left:30px; padding-right:18px; margin-left:-30px; margin-right:-18px;
+  background:linear-gradient(var(--paper) 82%, transparent);
 }
 .title{ font-family:'Caveat',cursive; font-weight:700; font-size:42px; line-height:1; color:var(--ink); margin:0; }
 .subtitle{ font-family:'Caveat',cursive; font-weight:600; font-size:17px; color:var(--ink-soft); margin:2px 0 14px; }
-
 .balance-row{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:2px solid var(--line); padding-bottom:12px; }
 .balance-label{ font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.08em; }
-.balance-value{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:26px; color:var(--stamp); }
-
-.tabs{ display:flex; gap:0; margin-top:14px; border-bottom:1px solid var(--line); }
+.balance-value{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:26px; color:var(--red); }
+.tabs{ display:flex; margin-top:14px; border-bottom:1px solid var(--line); }
 .tab{ flex:1; text-align:center; padding:9px 0; font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer; border-bottom:3px solid transparent; user-select:none; }
-.tab.active{ color:var(--ink); border-bottom-color:var(--stamp); }
-.tab.disabled{ opacity:0.4; pointer-events:none; }
-.tabs.mini{ margin-top:2px; }
-
+.tab.active{ color:var(--ink); border-bottom-color:var(--red); }
 .backup-row{ display:flex; justify-content:flex-end; gap:16px; padding:10px 0 0; }
 .backup-row button{ background:none; border:none; font-size:12px; color:var(--ink-soft); cursor:pointer; padding:0; text-decoration:underline; font-family:inherit; }
 
 main{ flex:1; padding-bottom:120px; }
 
+/* ---- lista principal ---- */
 .entry{ display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--line); gap:10px; cursor:pointer; }
 .entry-info{ display:flex; flex-direction:column; gap:2px; min-width:0; }
 .entry-name{ font-size:16px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.entry-date{ font-size:12px; color:var(--ink-soft); }
+.entry-sub{ font-size:12px; color:var(--ink-soft); }
 .entry-right{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
-.entry-value{ font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:600; color:var(--stamp); }
+.entry-value{ font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:600; color:var(--red); }
+.stamp{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12px; letter-spacing:0.1em; color:var(--red); border:2px solid var(--red); padding:2px 7px; border-radius:4px; transform:rotate(-8deg); display:inline-block; opacity:0.85; }
 
-.stamp{
-  font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12px; letter-spacing:0.1em;
-  color:var(--stamp); border:2px solid var(--stamp); padding:2px 7px; border-radius:4px;
-  transform:rotate(-8deg); display:inline-block; opacity:0.85; white-space:nowrap;
-}
+/* ---- lancamentos no detalhe ---- */
+.lanc{ display:flex; justify-content:space-between; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line); gap:10px; }
+.lanc-info{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.lanc-desc{ font-size:14px; font-weight:600; }
+.lanc-date{ font-size:12px; color:var(--ink-soft); }
+.lanc-val{ font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:600; flex-shrink:0; }
+.lanc-val.compra{ color:var(--red); }
+.lanc-val.pagamento{ color:var(--green); }
 
-.del-btn{ background:none; border:none; color:var(--ink-soft); font-size:18px; line-height:1; padding:4px 2px; cursor:pointer; }
-
-.empty{ text-align:center; padding:60px 10px; color:var(--ink-soft); font-size:14px; }
+/* ---- misc ---- */
+.empty{ text-align:center; padding:50px 10px; color:var(--ink-soft); font-size:14px; }
 .empty span{ display:block; font-family:'Caveat',cursive; font-size:24px; color:var(--ink); margin-bottom:6px; }
-
-.fab{
-  position:fixed; right:20px; bottom:calc(24px + env(safe-area-inset-bottom));
-  width:56px; height:56px; border-radius:50%; background:var(--ink); color:var(--paper);
-  font-size:28px; border:none; box-shadow:0 6px 16px rgba(43,42,36,0.35); cursor:pointer;
-  display:flex; align-items:center; justify-content:center; z-index:10;
-}
-
+.loading{ text-align:center; padding:40px 10px; color:var(--ink-soft); font-size:14px; }
+.loading::after{ content:''; display:block; width:28px; height:28px; margin:16px auto 0; border:3px solid var(--line); border-top-color:var(--red); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.toast{ position:fixed; bottom:calc(90px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); font-size:13px; padding:10px 18px; border-radius:20px; z-index:50; opacity:0; transition:opacity .2s; white-space:nowrap; pointer-events:none; }
+.toast.show{ opacity:1; }
+.fab{ position:fixed; right:20px; bottom:calc(24px + env(safe-area-inset-bottom)); width:56px; height:56px; border-radius:50%; background:var(--ink); color:var(--paper); font-size:28px; border:none; box-shadow:0 6px 16px rgba(43,42,36,0.35); cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; }
+.fab:disabled{ opacity:0.5; }
 .overlay{ position:fixed; inset:0; background:rgba(43,42,36,0.35); z-index:20; opacity:0; pointer-events:none; transition:opacity .2s; }
 .overlay.show{ opacity:1; pointer-events:auto; }
 
-.sheet{
-  position:fixed; left:0; right:0; bottom:0; z-index:21; background:var(--card);
-  border-radius:18px 18px 0 0; padding:20px 20px calc(24px + env(safe-area-inset-bottom));
-  transform:translateY(100%); transition:transform .25s ease-out; box-shadow:0 -8px 24px rgba(0,0,0,0.15);
-  max-height:85vh; overflow-y:auto;
-}
+/* ---- sheets ---- */
+.sheet{ position:fixed; left:0; right:0; bottom:0; z-index:21; background:var(--card); border-radius:18px 18px 0 0; padding:20px 20px calc(24px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .25s ease-out; box-shadow:0 -8px 24px rgba(0,0,0,0.15); max-height:88vh; overflow-y:auto; }
 .sheet.show{ transform:translateY(0); }
+.sheet.above{ z-index:22; }
 .sheet h2{ font-family:'Caveat',cursive; font-size:28px; margin:0 0 4px; color:var(--ink); }
-.saldo-info{ font-size:14px; color:var(--ink-soft); margin:0 0 14px; }
-.saldo-info strong{ color:var(--stamp); font-family:'IBM Plex Mono',monospace; }
+.saldo-destaque{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:22px; color:var(--red); margin:0 0 16px; }
+.section-label{ font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.08em; margin:0 0 8px; }
+.detail-btns{ display:flex; gap:10px; margin-bottom:16px; }
+.detail-btns button{ flex:1; padding:11px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; }
+.btn-outline{ background:transparent; border:1.5px solid var(--line); color:var(--ink); }
+.btn-solid{ background:var(--ink); color:var(--paper); border:none; }
 .field{ margin-bottom:14px; }
 .field label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.05em; }
-.field input{
-  width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:8px;
-  font-size:16px; background:var(--paper); color:var(--ink); font-family:inherit;
-}
-.field input.error{ border-color:var(--stamp); }
-.quick-fill{
-  display:inline-block; background:none; border:none; color:var(--stamp); font-size:13px;
-  font-weight:600; text-decoration:underline; cursor:pointer; padding:0 0 14px; font-family:inherit;
-}
-.sheet-actions{ display:flex; gap:10px; margin-top:4px; }
-.sheet-actions button{ flex:1; padding:12px; border-radius:10px; font-size:15px; font-weight:600; border:none; cursor:pointer; }
+.field input{ width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:8px; font-size:16px; background:var(--paper); color:var(--ink); font-family:inherit; }
+.field input.error{ border-color:var(--red); }
+.sheet-actions{ display:flex; gap:10px; margin-top:8px; }
+.sheet-actions button{ flex:1; padding:12px; border-radius:10px; font-size:15px; font-weight:600; border:none; cursor:pointer; font-family:inherit; }
+.sheet-actions button:disabled{ opacity:0.5; }
 .btn-cancel{ background:transparent; color:var(--ink-soft); border:1.5px solid var(--line) !important; }
 .btn-save{ background:var(--ink); color:var(--paper); }
+.quick-link{ display:inline-block; background:none; border:none; color:var(--red); font-size:13px; font-weight:600; text-decoration:underline; cursor:pointer; padding:0 0 12px; font-family:inherit; }
 .del-link{ display:block; width:100%; text-align:center; background:none; border:none; color:var(--ink-soft); font-size:13px; margin-top:18px; cursor:pointer; text-decoration:underline; font-family:inherit; }
 </style>
 </head>
@@ -129,9 +102,9 @@ main{ flex:1; padding-bottom:120px; }
 <div class="app">
   <header>
     <h1 class="title">Caderninho</h1>
-    <p class="subtitle">seu controle de fiado, sem enrolação</p>
+    <p class="subtitle">seu controle de fiado</p>
     <div class="balance-row">
-      <span class="balance-label">Em aberto</span>
+      <span class="balance-label">Total em aberto</span>
       <span class="balance-value" id="balance">R$ 0,00</span>
     </div>
     <div class="tabs">
@@ -140,28 +113,33 @@ main{ flex:1; padding-bottom:120px; }
       <div class="tab" data-filter="todos">Todos</div>
     </div>
     <div class="backup-row">
-      <button id="btn-export" type="button">Exportar backup</button>
-      <button id="btn-import" type="button">Importar backup</button>
+      <button id="btn-export">Exportar backup</button>
+      <button id="btn-import">Importar backup</button>
       <input type="file" id="file-import" accept="application/json" style="display:none">
     </div>
   </header>
   <main id="list"></main>
 </div>
 
-<button class="fab" id="fab" aria-label="Adicionar compra">+</button>
-
+<div class="toast" id="toast"></div>
+<button class="fab" id="fab">+</button>
 <div class="overlay" id="overlay"></div>
 
+<!-- Sheet 1: Nova compra (FAB) -->
 <div class="sheet" id="sheet-new">
   <h2>Nova compra</h2>
   <div class="field">
-    <label for="input-nome">Nome</label>
-    <input id="input-nome" type="text" placeholder="Quem comprou" autocomplete="off" list="clientes-datalist">
-    <datalist id="clientes-datalist"></datalist>
+    <label>Cliente</label>
+    <input id="new-nome" type="text" placeholder="Nome de quem comprou" autocomplete="off" list="dl-clientes">
+    <datalist id="dl-clientes"></datalist>
   </div>
   <div class="field">
-    <label for="input-valor">Valor (R$)</label>
-    <input id="input-valor" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0,00">
+    <label>O que comprou</label>
+    <input id="new-desc" type="text" placeholder="ex: arroz, feijão, pão..." autocomplete="off">
+  </div>
+  <div class="field">
+    <label>Valor (R$)</label>
+    <input id="new-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
   </div>
   <div class="sheet-actions">
     <button class="btn-cancel" id="btn-cancel-new">Cancelar</button>
@@ -169,323 +147,351 @@ main{ flex:1; padding-bottom:120px; }
   </div>
 </div>
 
-<div class="sheet" id="sheet-action">
-  <h2 id="action-title">Nome</h2>
-  <p class="saldo-info">Saldo atual: <strong id="action-saldo">R$ 0,00</strong></p>
-  <div class="tabs mini" id="action-mode-tabs">
-    <div class="tab" data-mode="pagamento">Pagamento</div>
-    <div class="tab" data-mode="compra">Nova compra</div>
+<!-- Sheet 2: Detalhe do cliente -->
+<div class="sheet" id="sheet-detail">
+  <h2 id="det-nome">Cliente</h2>
+  <p class="saldo-destaque" id="det-saldo">R$ 0,00</p>
+  <div class="detail-btns">
+    <button class="btn-outline" id="btn-det-compra">+ Nova compra</button>
+    <button class="btn-solid" id="btn-det-pag">💰 Pagamento</button>
   </div>
-  <div class="field" style="margin-top:14px;">
-    <label for="action-valor-input">Valor (R$)</label>
-    <input id="action-valor-input" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0,00">
+  <p class="section-label">Histórico</p>
+  <div id="det-lancamentos"></div>
+  <button class="del-link" id="btn-del-cliente">Excluir cliente</button>
+</div>
+
+<!-- Sheet 3: Compra (de dentro do detalhe) -->
+<div class="sheet above" id="sheet-compra">
+  <h2 id="compra-titulo">Nova compra</h2>
+  <div class="field">
+    <label>O que comprou</label>
+    <input id="compra-desc" type="text" placeholder="ex: arroz, feijão, pão..." autocomplete="off">
   </div>
-  <button class="quick-fill" id="btn-pagar-tudo" type="button">Pagar tudo</button>
+  <div class="field">
+    <label>Valor (R$)</label>
+    <input id="compra-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
+  </div>
   <div class="sheet-actions">
-    <button class="btn-cancel" id="btn-cancel-action">Cancelar</button>
-    <button class="btn-save" id="btn-confirm-action">Confirmar</button>
+    <button class="btn-cancel" id="btn-cancel-compra">Cancelar</button>
+    <button class="btn-save" id="btn-save-compra">Salvar</button>
   </div>
-  <button class="del-link" id="btn-delete-cliente" type="button">Excluir cliente</button>
+</div>
+
+<!-- Sheet 4: Pagamento (de dentro do detalhe) -->
+<div class="sheet above" id="sheet-pag">
+  <h2 id="pag-titulo">Pagamento</h2>
+  <div class="field">
+    <label>Valor recebido (R$)</label>
+    <input id="pag-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
+  </div>
+  <button class="quick-link" id="btn-pagar-tudo">Pagar tudo</button>
+  <div class="sheet-actions">
+    <button class="btn-cancel" id="btn-cancel-pag">Cancelar</button>
+    <button class="btn-save" id="btn-save-pag">Confirmar</button>
+  </div>
 </div>
 
 <script>
-const STORAGE_KEY = 'fiado-clientes';
+// ===== CONFIG =====
+const URL_BASE  = 'https://rgdpudnuwvdtdznpzqzk.supabase.co/rest/v1';
+const KEY       = 'sb_publishable_lEIYdfrQu5YUGPl3pKWD6w_O1yNjsBa';
+const H = { 'apikey':KEY, 'Authorization':'Bearer '+KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' };
+
+// ===== DB =====
+async function db(path, method='GET', body){
+  const r = await fetch(URL_BASE+'/'+path, { method, headers:H, body: body ? JSON.stringify(body) : undefined });
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
+  if(r.status===204 || method==='DELETE') return null;
+  return r.json();
+}
+const getClientes    = ()      => db('clientes?select=*&order=last_update.desc');
+const insertCliente  = c       => db('clientes','POST',c);
+const updateCliente  = (id,f)  => db(`clientes?id=eq.${id}`,'PATCH',f);
+const deleteCliente  = id      => db(`clientes?id=eq.${id}`,'DELETE');
+const getLancamentos = cid     => db(`lancamentos?cliente_id=eq.${cid}&order=data.desc`);
+const insertLanc     = l       => db('lancamentos','POST',l);
+
+// ===== STATE =====
 let clientes = [];
 let filter = 'aberto';
-let currentClientId = null;
-let actionMode = 'pagamento';
+let currentId = null;
+let busy = false;
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function todayISO(){
-  const d = new Date();
-  const tz = d.getTimezoneOffset()*60000;
-  return new Date(d - tz).toISOString().slice(0,10);
-}
-function formatDate(iso){
-  const [y,m,d] = iso.split('-');
-  return d+'/'+m;
-}
-function formatCurrency(v){
-  return Number(v).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-}
-function round2(n){
-  return Math.round(n*100)/100;
-}
+// ===== UTILS =====
+const $  = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = () => { const d=new Date(); return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10); };
+const fmtDt = iso => { if(!iso) return ''; const [,m,d]=iso.split('-'); return `${d}/${m}`; };
+const fmtR$ = v => Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const r2 = n => Math.round(n*100)/100;
+const uid = () => Date.now()+'-'+Math.random().toString(36).slice(2,7);
 
-function loadClientes(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    clientes = raw ? JSON.parse(raw) : [];
-  }catch(e){
-    clientes = [];
-  }
-  render();
-}
+let _tt;
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),2800); }
+function setBusy(v){ busy=v; ['fab','btn-save-new','btn-save-compra','btn-save-pag'].forEach(id=>$(id).disabled=v); }
+function clearErr(...ids){ ids.forEach(id=>$(id).classList.remove('error')); }
+function setErr(...ids){ ids.forEach(id=>$(id).classList.add('error')); }
 
-function saveClientes(){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
-  }catch(e){
-    console.error('Erro ao salvar', e);
-  }
+// ===== MONEY INPUT =====
+function moneyFmt(el){
+  el.addEventListener('input', ()=>{
+    let digits = el.value.replace(/\D/g,'');
+    if(!digits){ el.value=''; return; }
+    let cents = parseInt(digits,10);
+    let reais = cents/100;
+    el.value = reais.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  });
 }
+function parseMoney(el){
+  const raw = el.value.replace(/\./g,'').replace(',','.');
+  return parseFloat(raw)||0;
+}
+// aplica nos 3 inputs de valor
+['new-valor','compra-valor','pag-valor'].forEach(id=>moneyFmt($(id)));
 
+// ===== RENDER =====
 function getFiltered(){
-  let list = clientes.slice();
-  if(filter === 'aberto') list = list.filter(c => c.saldo > 0);
-  else if(filter === 'pago') list = list.filter(c => c.saldo === 0);
-  list.sort((a,b) => (b.lastUpdate || '').localeCompare(a.lastUpdate || ''));
-  return list;
-}
-
-function getBalance(){
-  return clientes.filter(c => c.saldo > 0).reduce((s,c) => s + Number(c.saldo), 0);
-}
-
-function emptyMessage(){
-  if(filter === 'aberto') return ['Tudo certo por aqui', 'Nenhum fiado em aberto.'];
-  if(filter === 'pago') return ['Nada por aqui ainda', 'Ninguém quitou ainda.'];
-  return ['Caderninho vazio', 'Toque no + para lançar a primeira compra.'];
+  let l = clientes.slice();
+  if(filter==='aberto') l=l.filter(c=>Number(c.saldo)>0);
+  if(filter==='pago')   l=l.filter(c=>Number(c.saldo)===0);
+  return l.sort((a,b)=>(b.last_update||'').localeCompare(a.last_update||''));
 }
 
 function render(){
-  document.getElementById('balance').textContent = formatCurrency(getBalance());
-  document.querySelectorAll('header > .tabs > .tab').forEach(t => t.classList.toggle('active', t.dataset.filter === filter));
-
+  $('balance').textContent = fmtR$(clientes.filter(c=>Number(c.saldo)>0).reduce((s,c)=>s+Number(c.saldo),0));
+  document.querySelectorAll('header>.tabs>.tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===filter));
   const list = getFiltered();
-  const container = document.getElementById('list');
-
-  if(list.length === 0){
-    const [h, p] = emptyMessage();
-    container.innerHTML = `<div class="empty"><span>${h}</span>${p}</div>`;
+  const el = $('list');
+  if(!list.length){
+    const m={aberto:['Tudo certo!','Nenhum fiado em aberto.'],pago:['Nada ainda','Ninguém quitou ainda.'],todos:['Caderninho vazio','Toque no + para começar.']};
+    const [h,p]=m[filter];
+    el.innerHTML=`<div class="empty"><span>${h}</span>${p}</div>`;
     return;
   }
-
-  container.innerHTML = list.map(c => {
-    const isPago = c.saldo === 0;
-    const rightHtml = isPago
-      ? `<span class="stamp">PAGO</span>`
-      : `<span class="entry-value">${formatCurrency(c.saldo)}</span>`;
-    return `
-      <div class="entry" data-id="${c.id}">
-        <div class="entry-info">
-          <span class="entry-name">${escapeHtml(c.nome)}</span>
-          <span class="entry-date">atualizado ${formatDate(c.lastUpdate)}</span>
-        </div>
-        <div class="entry-right">
-          ${rightHtml}
-          <button class="del-btn" data-id="${c.id}" data-action="delete">×</button>
-        </div>
+  el.innerHTML = list.map(c=>{
+    const pago = Number(c.saldo)===0;
+    return `<div class="entry" data-id="${c.id}">
+      <div class="entry-info">
+        <span class="entry-name">${esc(c.nome)}</span>
+        <span class="entry-sub">atualizado ${fmtDt(c.last_update)}</span>
       </div>
-    `;
+      <div class="entry-right">
+        ${pago ? '<span class="stamp">PAGO</span>' : `<span class="entry-value">${fmtR$(c.saldo)}</span>`}
+      </div>
+    </div>`;
   }).join('');
 }
 
-document.getElementById('list').addEventListener('click', (ev) => {
-  const delBtn = ev.target.closest('[data-action="delete"]');
-  if(delBtn){
-    deleteCliente(delBtn.dataset.id);
-    return;
-  }
-  const row = ev.target.closest('.entry');
-  if(row) openActionSheet(row.dataset.id);
-});
-
-function deleteCliente(id){
-  const c = clientes.find(x => x.id === id);
-  if(!c) return;
-  const ok = confirm(`Excluir "${c.nome}"? Isso remove o histórico dele.`);
-  if(!ok) return;
-  clientes = clientes.filter(x => x.id !== id);
-  saveClientes();
-  render();
-}
-
-document.querySelectorAll('header > .tabs > .tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    filter = tab.dataset.filter;
+// ===== INIT =====
+async function load(){
+  $('list').innerHTML='<div class="loading">Carregando</div>';
+  try{
+    clientes = (await getClientes()).map(r=>({...r,saldo:Number(r.saldo)}));
     render();
-  });
-});
-
-// ---- sheet: nova compra (FAB) ----
-const sheetNew = document.getElementById('sheet-new');
-const overlay = document.getElementById('overlay');
-const fab = document.getElementById('fab');
-const inputNome = document.getElementById('input-nome');
-const inputValor = document.getElementById('input-valor');
-const datalist = document.getElementById('clientes-datalist');
-
-function openNewSheet(){
-  inputNome.value = '';
-  inputValor.value = '';
-  inputNome.classList.remove('error');
-  inputValor.classList.remove('error');
-  datalist.innerHTML = clientes.map(c => `<option value="${escapeHtml(c.nome)}">`).join('');
-  sheetNew.classList.add('show');
-  overlay.classList.add('show');
-  overlay.dataset.target = 'new';
-  setTimeout(() => inputNome.focus(), 250);
-}
-function closeAllSheets(){
-  sheetNew.classList.remove('show');
-  document.getElementById('sheet-action').classList.remove('show');
-  overlay.classList.remove('show');
-}
-
-fab.addEventListener('click', openNewSheet);
-overlay.addEventListener('click', closeAllSheets);
-document.getElementById('btn-cancel-new').addEventListener('click', closeAllSheets);
-
-document.getElementById('btn-save-new').addEventListener('click', () => {
-  const nome = inputNome.value.trim();
-  const valor = parseFloat(inputValor.value);
-
-  let valid = true;
-  if(!nome){ inputNome.classList.add('error'); valid = false; } else { inputNome.classList.remove('error'); }
-  if(!valor || valor <= 0){ inputValor.classList.add('error'); valid = false; } else { inputValor.classList.remove('error'); }
-  if(!valid) return;
-
-  const existing = clientes.find(c => c.nome.trim().toLowerCase() === nome.toLowerCase());
-  if(existing){
-    existing.saldo = round2(existing.saldo + valor);
-    existing.lastUpdate = todayISO();
-  }else{
-    clientes.push({
-      id: Date.now()+'-'+Math.random().toString(36).slice(2,7),
-      nome, saldo: round2(valor), lastUpdate: todayISO()
-    });
+  }catch(e){
+    $('list').innerHTML='<div class="empty"><span>Erro de conexão</span>Verifique a internet e recarregue.</div>';
+    console.error(e);
   }
-  saveClientes();
-  closeAllSheets();
-  render();
+}
+
+// ===== LIST CLICK =====
+$('list').addEventListener('click', ev=>{
+  const row = ev.target.closest('.entry');
+  if(row) openDetail(row.dataset.id);
+});
+document.querySelectorAll('header>.tabs>.tab').forEach(t=>{
+  t.addEventListener('click',()=>{ filter=t.dataset.filter; render(); });
 });
 
-// ---- sheet: ação (pagamento / nova compra num cliente existente) ----
-const sheetAction = document.getElementById('sheet-action');
-const actionValorInput = document.getElementById('action-valor-input');
-const actionModeTabs = document.querySelectorAll('#action-mode-tabs .tab');
-const btnPagarTudo = document.getElementById('btn-pagar-tudo');
+// ===== OVERLAY =====
+$('overlay').addEventListener('click', closeAll);
+function closeAll(){
+  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
+  $('overlay').classList.remove('show');
+}
+function closeTop(){
+  // fecha só o sheet "above" (compra ou pagamento)
+  ['sheet-compra','sheet-pag'].forEach(id=>$(id).classList.remove('show'));
+}
 
-function openActionSheet(id){
-  const c = clientes.find(x => x.id === id);
+// ===== FAB: NOVA COMPRA =====
+$('fab').addEventListener('click', ()=>{
+  clearErr('new-nome','new-desc','new-valor');
+  ['new-nome','new-desc','new-valor'].forEach(id=>$(id).value='');
+  $('dl-clientes').innerHTML = clientes.map(c=>`<option value="${esc(c.nome)}">`).join('');
+  $('sheet-new').classList.add('show');
+  $('overlay').classList.add('show');
+  setTimeout(()=>$('new-nome').focus(),250);
+});
+$('btn-cancel-new').addEventListener('click', closeAll);
+
+$('btn-save-new').addEventListener('click', async ()=>{
+  const nome  = $('new-nome').value.trim();
+  const desc  = $('new-desc').value.trim();
+  const valor = parseMoney($('new-valor'));
+  let ok=true;
+  if(!nome)       { setErr('new-nome');  ok=false; } else clearErr('new-nome');
+  if(!valor||valor<=0){ setErr('new-valor'); ok=false; } else clearErr('new-valor');
+  if(!ok) return;
+  setBusy(true);
+  try{
+    const t = today();
+    let c = clientes.find(x=>x.nome.trim().toLowerCase()===nome.toLowerCase());
+    if(!c){
+      const [row] = await insertCliente({id:uid(), nome, saldo:0, last_update:t});
+      c = {...row, saldo:0};
+      clientes.push(c);
+    }
+    const ns = r2(Number(c.saldo)+valor);
+    await updateCliente(c.id,{saldo:ns, last_update:t});
+    await insertLanc({id:uid(), cliente_id:c.id, tipo:'compra', descricao:desc||'Compra', valor, data:t});
+    c.saldo=ns; c.last_update=t;
+    render(); closeAll(); toast('Compra salva!');
+  }catch(e){ toast('Erro ao salvar. Verifique a internet.'); console.error(e); }
+  finally{ setBusy(false); }
+});
+
+// ===== DETAIL =====
+async function openDetail(id){
+  const c = clientes.find(x=>x.id===id);
   if(!c) return;
-  currentClientId = id;
-  document.getElementById('action-title').textContent = c.nome;
-  document.getElementById('action-saldo').textContent = formatCurrency(c.saldo);
-  actionValorInput.value = '';
-  actionValorInput.classList.remove('error');
-
-  const pagamentoTab = document.querySelector('#action-mode-tabs .tab[data-mode="pagamento"]');
-  if(c.saldo > 0){
-    pagamentoTab.classList.remove('disabled');
-    actionMode = 'pagamento';
-  }else{
-    pagamentoTab.classList.add('disabled');
-    actionMode = 'compra';
-  }
-  updateActionModeUI();
-
-  sheetAction.classList.add('show');
-  overlay.classList.add('show');
-  setTimeout(() => actionValorInput.focus(), 250);
+  currentId = id;
+  $('det-nome').textContent = c.nome;
+  $('det-saldo').textContent = fmtR$(c.saldo);
+  $('det-lancamentos').innerHTML = '<div class="loading">Carregando histórico</div>';
+  $('sheet-detail').classList.add('show');
+  $('overlay').classList.add('show');
+  await refreshLancs();
 }
 
-function updateActionModeUI(){
-  actionModeTabs.forEach(t => t.classList.toggle('active', t.dataset.mode === actionMode));
-  const c = clientes.find(x => x.id === currentClientId);
-  if(actionMode === 'pagamento' && c){
-    btnPagarTudo.style.display = 'inline-block';
-    btnPagarTudo.textContent = `Pagar tudo (${formatCurrency(c.saldo)})`;
-  }else{
-    btnPagarTudo.style.display = 'none';
+async function refreshLancs(){
+  try{
+    const lancs = await getLancamentos(currentId);
+    if(!lancs.length){
+      $('det-lancamentos').innerHTML='<div class="empty" style="padding:20px 0"><span>Sem histórico</span>Nenhum lançamento ainda.</div>';
+      return;
+    }
+    $('det-lancamentos').innerHTML = lancs.map(l=>{
+      const isC = l.tipo==='compra';
+      return `<div class="lanc">
+        <div class="lanc-info">
+          <span class="lanc-desc">${esc(l.descricao||( isC?'Compra':'Pagamento'))}</span>
+          <span class="lanc-date">${fmtDt(l.data)}</span>
+        </div>
+        <span class="lanc-val ${l.tipo}">${isC?'+':'-'} ${fmtR$(l.valor)}</span>
+      </div>`;
+    }).join('');
+  }catch(e){
+    $('det-lancamentos').innerHTML='<div class="empty" style="padding:20px 0"><span>Erro</span>Não carregou o histórico.</div>';
   }
 }
 
-actionModeTabs.forEach(t => {
-  t.addEventListener('click', () => {
-    if(t.classList.contains('disabled')) return;
-    actionMode = t.dataset.mode;
-    updateActionModeUI();
-  });
+// botão + compra (dentro do detalhe)
+$('btn-det-compra').addEventListener('click', ()=>{
+  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+  $('compra-titulo').textContent = `Compra — ${c.nome}`;
+  $('compra-desc').value=''; $('compra-valor').value='';
+  clearErr('compra-desc','compra-valor');
+  $('sheet-compra').classList.add('show');
+  setTimeout(()=>$('compra-desc').focus(),250);
+});
+$('btn-cancel-compra').addEventListener('click', closeTop);
+
+$('btn-save-compra').addEventListener('click', async ()=>{
+  const desc  = $('compra-desc').value.trim();
+  const valor = parseMoney($('compra-valor'));
+  if(!valor||valor<=0){ setErr('compra-valor'); return; } else clearErr('compra-valor');
+  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+  setBusy(true);
+  try{
+    const t = today();
+    const ns = r2(Number(c.saldo)+valor);
+    await updateCliente(c.id,{saldo:ns, last_update:t});
+    await insertLanc({id:uid(), cliente_id:c.id, tipo:'compra', descricao:desc||'Compra', valor, data:t});
+    c.saldo=ns; c.last_update=t;
+    $('det-saldo').textContent = fmtR$(ns);
+    render(); closeTop(); await refreshLancs(); toast('Compra adicionada!');
+  }catch(e){ toast('Erro ao salvar.'); console.error(e); }
+  finally{ setBusy(false); }
 });
 
-btnPagarTudo.addEventListener('click', () => {
-  const c = clientes.find(x => x.id === currentClientId);
-  if(c) actionValorInput.value = c.saldo.toFixed(2);
+// botão pagamento (dentro do detalhe)
+$('btn-det-pag').addEventListener('click', ()=>{
+  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+  $('pag-titulo').textContent = `Pagamento — ${c.nome}`;
+  $('pag-valor').value=''; clearErr('pag-valor');
+  $('sheet-pag').classList.add('show');
+  setTimeout(()=>$('pag-valor').focus(),250);
+});
+$('btn-cancel-pag').addEventListener('click', closeTop);
+$('btn-pagar-tudo').addEventListener('click', ()=>{
+  const c = clientes.find(x=>x.id===currentId);
+  if(c) $('pag-valor').value = c.saldo.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 });
 
-document.getElementById('btn-cancel-action').addEventListener('click', closeAllSheets);
-
-document.getElementById('btn-confirm-action').addEventListener('click', () => {
-  const valor = parseFloat(actionValorInput.value);
-  if(!valor || valor <= 0){ actionValorInput.classList.add('error'); return; }
-  actionValorInput.classList.remove('error');
-
-  const c = clientes.find(x => x.id === currentClientId);
-  if(!c) return;
-
-  if(actionMode === 'pagamento'){
-    c.saldo = Math.max(0, round2(c.saldo - valor));
-  }else{
-    c.saldo = round2(c.saldo + valor);
-  }
-  c.lastUpdate = todayISO();
-  saveClientes();
-  closeAllSheets();
-  render();
+$('btn-save-pag').addEventListener('click', async ()=>{
+  const valor = parseMoney($('pag-valor'));
+  if(!valor||valor<=0){ setErr('pag-valor'); return; } else clearErr('pag-valor');
+  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+  setBusy(true);
+  try{
+    const t = today();
+    const ns = Math.max(0, r2(Number(c.saldo)-valor));
+    await updateCliente(c.id,{saldo:ns, last_update:t});
+    await insertLanc({id:uid(), cliente_id:c.id, tipo:'pagamento', descricao:'Pagamento', valor, data:t});
+    c.saldo=ns; c.last_update=t;
+    $('det-saldo').textContent = fmtR$(ns);
+    render(); closeTop(); await refreshLancs(); toast('Pagamento registrado!');
+  }catch(e){ toast('Erro ao salvar.'); console.error(e); }
+  finally{ setBusy(false); }
 });
 
-document.getElementById('btn-delete-cliente').addEventListener('click', () => {
-  if(currentClientId){
-    closeAllSheets();
-    deleteCliente(currentClientId);
-  }
+// excluir cliente
+$('btn-del-cliente').addEventListener('click', async ()=>{
+  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+  if(!confirm(`Excluir "${c.nome}" e todo o histórico?`)) return;
+  setBusy(true);
+  try{
+    await deleteCliente(c.id); // cascade deletes lancamentos
+    clientes = clientes.filter(x=>x.id!==c.id);
+    closeAll(); render(); toast('Cliente removido');
+  }catch(e){ toast('Erro ao excluir.'); }
+  finally{ setBusy(false); }
 });
 
-// ---- backup ----
-function exportBackup(){
-  const data = JSON.stringify(clientes, null, 2);
-  const blob = new Blob([data], {type:'application/json'});
+// ===== BACKUP =====
+$('btn-export').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify({v:2, clientes, at:new Date().toISOString()},null,2)],{type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `fiado-backup-${todayISO()}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function importBackup(file){
-  const reader = new FileReader();
-  reader.onload = (e) => {
+  a.href=url; a.download=`fiado-${today()}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+});
+$('btn-import').addEventListener('click', ()=>$('file-import').click());
+$('file-import').addEventListener('change', async e=>{
+  const file=e.target.files[0]; if(!file) return; e.target.value='';
+  const reader=new FileReader();
+  reader.onload=async ev=>{
     try{
-      const imported = JSON.parse(e.target.result);
-      if(!Array.isArray(imported)) throw new Error('formato inválido');
-      const ok = confirm(`Importar ${imported.length} cliente(s)? Isso substitui os dados atuais.`);
-      if(!ok) return;
-      clientes = imported;
-      saveClientes();
-      render();
-    }catch(err){
-      alert('Arquivo inválido. Selecione um backup exportado por este app.');
-    }
+      const p=JSON.parse(ev.target.result);
+      const list = p.v===2 ? p.clientes : p;
+      if(!Array.isArray(list)) throw new Error();
+      if(!confirm(`Importar ${list.length} cliente(s)? Substitui os dados atuais.`)) return;
+      setBusy(true);
+      try{
+        for(const c of clientes) await deleteCliente(c.id);
+        for(const c of list) await insertCliente({id:c.id, nome:c.nome, saldo:Number(c.saldo)||0, last_update:c.last_update||today()});
+        clientes=list.map(c=>({...c,saldo:Number(c.saldo)||0}));
+        render(); toast('Backup importado!');
+      }catch(e){ toast('Erro ao importar.'); }
+      finally{ setBusy(false); }
+    }catch{ alert('Arquivo inválido.'); }
   };
   reader.readAsText(file);
-}
-
-document.getElementById('btn-export').addEventListener('click', exportBackup);
-document.getElementById('btn-import').addEventListener('click', () => document.getElementById('file-import').click());
-document.getElementById('file-import').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if(file) importBackup(file);
-  e.target.value = '';
 });
 
-loadClientes();
+// ===== GO =====
+load();
 </script>
 </body>
 </html>
