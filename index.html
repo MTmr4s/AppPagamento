@@ -20,16 +20,89 @@ html,body{
   background: repeating-linear-gradient(to bottom, transparent 0px, transparent 35px, rgba(183,202,172,0.55) 36px), var(--paper);
   color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif; overscroll-behavior:none;
 }
+
+/* ===================== LOGIN ===================== */
+#screen-login{
+  min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  justify-content:flex-start; padding:calc(48px + env(safe-area-inset-top)) 24px 40px;
+}
+.login-title{ font-family:'Caveat',cursive; font-weight:700; font-size:52px; color:var(--ink); margin:0 0 2px; text-align:center; }
+.login-sub{ font-family:'Caveat',cursive; font-size:20px; color:var(--ink-soft); margin:0 0 32px; text-align:center; }
+
+.user-list{ width:100%; max-width:340px; display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.user-card{
+  display:flex; align-items:center; gap:14px; padding:14px 16px;
+  background:var(--card); border-radius:12px; border:none; cursor:pointer;
+  box-shadow:0 2px 8px rgba(43,42,36,0.1); width:100%; font-family:inherit; text-align:left;
+}
+.user-card:active{ opacity:0.8; }
+.user-avatar{
+  width:40px; height:40px; border-radius:50%; background:var(--ink);
+  color:var(--paper); display:flex; align-items:center; justify-content:center;
+  font-family:'Caveat',cursive; font-size:20px; font-weight:700; flex-shrink:0;
+}
+.user-name{ font-size:16px; font-weight:600; color:var(--ink); }
+.user-hint{ font-size:12px; color:var(--ink-soft); }
+.btn-add-user{
+  display:flex; align-items:center; gap:10px; padding:12px 16px;
+  background:transparent; border:1.5px dashed var(--line); border-radius:12px;
+  cursor:pointer; width:100%; max-width:340px; font-family:inherit;
+  font-size:14px; color:var(--ink-soft); margin-bottom:24px;
+}
+
+/* PIN overlay */
+#pin-overlay{
+  position:fixed; inset:0; z-index:50; background:rgba(43,42,36,0.5);
+  display:none; align-items:flex-end; justify-content:center;
+}
+#pin-overlay.show{ display:flex; }
+#pin-box{
+  background:var(--card); border-radius:18px 18px 0 0; width:100%; max-width:400px;
+  padding:24px 24px calc(24px + env(safe-area-inset-bottom));
+}
+#pin-box h3{ font-family:'Caveat',cursive; font-size:26px; margin:0 0 4px; color:var(--ink); }
+#pin-box .pin-sub{ font-size:13px; color:var(--ink-soft); margin:0 0 20px; }
+.pin-dots{ display:flex; gap:14px; justify-content:center; margin-bottom:24px; }
+.pin-dot{ width:14px; height:14px; border-radius:50%; border:2px solid var(--line); background:transparent; transition:background .12s; }
+.pin-dot.filled{ background:var(--ink); border-color:var(--ink); }
+.pin-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.pin-btn{
+  aspect-ratio:1; border-radius:50%; border:none; background:var(--paper);
+  font-size:22px; font-weight:600; color:var(--ink); cursor:pointer;
+  font-family:'IBM Plex Mono',monospace; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 2px 6px rgba(43,42,36,0.1);
+}
+.pin-btn:active{ background:var(--line); }
+.pin-btn.del{ font-size:18px; background:transparent; box-shadow:none; color:var(--ink-soft); }
+.pin-error{ text-align:center; color:var(--red); font-size:13px; margin-top:12px; min-height:18px; }
+
+/* novo usuário sheet */
+#new-user-box{
+  background:var(--card); border-radius:18px 18px 0 0; width:100%; max-width:400px;
+  padding:24px 24px calc(24px + env(safe-area-inset-bottom));
+}
+#new-user-box h3{ font-family:'Caveat',cursive; font-size:26px; margin:0 0 16px; color:var(--ink); }
+
+/* ===================== APP ===================== */
+#screen-app{ display:none; }
 .margin-line{ position:fixed; top:0; bottom:0; left:18px; width:1px; background:rgba(178,58,46,0.28); z-index:0; pointer-events:none; }
 .app{ position:relative; z-index:1; padding-left:30px; padding-right:18px; max-width:480px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; }
 
 header{
   position:sticky; top:0; z-index:5;
-  padding-top:calc(22px + env(safe-area-inset-top)); padding-bottom:14px;
+  padding-top:calc(18px + env(safe-area-inset-top)); padding-bottom:14px;
   padding-left:30px; padding-right:18px; margin-left:-30px; margin-right:-18px;
   background:linear-gradient(var(--paper) 82%, transparent);
 }
+.header-top{ display:flex; justify-content:space-between; align-items:flex-start; }
 .title{ font-family:'Caveat',cursive; font-weight:700; font-size:42px; line-height:1; color:var(--ink); margin:0; }
+.user-badge{
+  display:flex; align-items:center; gap:6px; background:var(--card);
+  border:1px solid var(--line); border-radius:20px; padding:5px 10px 5px 6px;
+  cursor:pointer; margin-top:4px; flex-shrink:0;
+}
+.user-badge-avatar{ width:22px; height:22px; border-radius:50%; background:var(--ink); color:var(--paper); font-family:'Caveat',cursive; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.user-badge-name{ font-size:12px; font-weight:600; color:var(--ink); }
 .subtitle{ font-family:'Caveat',cursive; font-weight:600; font-size:17px; color:var(--ink-soft); margin:2px 0 14px; }
 .balance-row{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:2px solid var(--line); padding-bottom:12px; }
 .balance-label{ font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.08em; }
@@ -39,10 +112,14 @@ header{
 .tab.active{ color:var(--ink); border-bottom-color:var(--red); }
 .backup-row{ display:flex; justify-content:flex-end; gap:16px; padding:10px 0 0; }
 .backup-row button{ background:none; border:none; font-size:12px; color:var(--ink-soft); cursor:pointer; padding:0; text-decoration:underline; font-family:inherit; }
+.search-wrap{ position:relative; margin-top:10px; }
+.search-wrap input{ width:100%; padding:9px 12px 9px 34px; border:1.5px solid var(--line); border-radius:8px; font-size:14px; background:var(--paper); color:var(--ink); font-family:inherit; outline:none; }
+.search-wrap input:focus{ border-color:var(--ink-soft); }
+.search-icon{ position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--ink-soft); font-size:15px; pointer-events:none; }
+.search-clear{ position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--ink-soft); font-size:16px; cursor:pointer; padding:0; display:none; }
 
 main{ flex:1; padding-bottom:120px; }
 
-/* ---- lista principal ---- */
 .entry{ display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--line); gap:10px; cursor:pointer; }
 .entry-info{ display:flex; flex-direction:column; gap:2px; min-width:0; }
 .entry-name{ font-size:16px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -51,7 +128,6 @@ main{ flex:1; padding-bottom:120px; }
 .entry-value{ font-family:'IBM Plex Mono',monospace; font-size:16px; font-weight:600; color:var(--red); }
 .stamp{ font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12px; letter-spacing:0.1em; color:var(--red); border:2px solid var(--red); padding:2px 7px; border-radius:4px; transform:rotate(-8deg); display:inline-block; opacity:0.85; }
 
-/* ---- lancamentos no detalhe ---- */
 .lanc{ display:flex; justify-content:space-between; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line); gap:10px; }
 .lanc-info{ display:flex; flex-direction:column; gap:2px; min-width:0; }
 .lanc-desc{ font-size:14px; font-weight:600; }
@@ -60,20 +136,18 @@ main{ flex:1; padding-bottom:120px; }
 .lanc-val.compra{ color:var(--red); }
 .lanc-val.pagamento{ color:var(--green); }
 
-/* ---- misc ---- */
 .empty{ text-align:center; padding:50px 10px; color:var(--ink-soft); font-size:14px; }
 .empty span{ display:block; font-family:'Caveat',cursive; font-size:24px; color:var(--ink); margin-bottom:6px; }
 .loading{ text-align:center; padding:40px 10px; color:var(--ink-soft); font-size:14px; }
 .loading::after{ content:''; display:block; width:28px; height:28px; margin:16px auto 0; border:3px solid var(--line); border-top-color:var(--red); border-radius:50%; animation:spin .7s linear infinite; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
-.toast{ position:fixed; bottom:calc(90px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); font-size:13px; padding:10px 18px; border-radius:20px; z-index:50; opacity:0; transition:opacity .2s; white-space:nowrap; pointer-events:none; }
+.toast{ position:fixed; bottom:calc(90px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); font-size:13px; padding:10px 18px; border-radius:20px; z-index:99; opacity:0; transition:opacity .2s; white-space:nowrap; pointer-events:none; }
 .toast.show{ opacity:1; }
 .fab{ position:fixed; right:20px; bottom:calc(24px + env(safe-area-inset-bottom)); width:56px; height:56px; border-radius:50%; background:var(--ink); color:var(--paper); font-size:28px; border:none; box-shadow:0 6px 16px rgba(43,42,36,0.35); cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10; }
 .fab:disabled{ opacity:0.5; }
 .overlay{ position:fixed; inset:0; background:rgba(43,42,36,0.35); z-index:20; opacity:0; pointer-events:none; transition:opacity .2s; }
 .overlay.show{ opacity:1; pointer-events:auto; }
 
-/* ---- sheets ---- */
 .sheet{ position:fixed; left:0; right:0; bottom:0; z-index:21; background:var(--card); border-radius:18px 18px 0 0; padding:20px 20px calc(24px + env(safe-area-inset-bottom)); transform:translateY(100%); transition:transform .25s ease-out; box-shadow:0 -8px 24px rgba(0,0,0,0.15); max-height:88vh; overflow-y:auto; }
 .sheet.show{ transform:translateY(0); }
 .sheet.above{ z-index:22; }
@@ -98,103 +172,186 @@ main{ flex:1; padding-bottom:120px; }
 </style>
 </head>
 <body>
-<div class="margin-line"></div>
-<div class="app">
-  <header>
-    <h1 class="title">Caderninho</h1>
-    <p class="subtitle">seu controle de fiado</p>
-    <div class="balance-row">
-      <span class="balance-label">Total em aberto</span>
-      <span class="balance-value" id="balance">R$ 0,00</span>
+
+<!-- ===== TELA DE LOGIN ===== -->
+<div id="screen-login">
+  <h1 class="login-title">Caderninho</h1>
+  <p class="login-sub">seu controle de fiado</p>
+
+  <div id="login-step-nome" style="width:100%;max-width:340px;">
+    <div class="field" style="margin-bottom:10px;">
+      <label>Seu nome</label>
+      <input id="login-nome-input" type="text" placeholder="Digite seu nome" autocomplete="off">
     </div>
-    <div class="tabs">
-      <div class="tab active" data-filter="aberto">Em aberto</div>
-      <div class="tab" data-filter="pago">Pago</div>
-      <div class="tab" data-filter="todos">Todos</div>
+    <button id="btn-login-continuar" style="width:100%;padding:13px;border-radius:10px;font-size:16px;font-weight:600;background:var(--ink);color:var(--paper);border:none;cursor:pointer;font-family:inherit;">Continuar</button>
+    <p id="login-nome-error" style="color:var(--red);font-size:13px;margin:10px 0 0;min-height:18px;text-align:center;"></p>
+    <button id="btn-show-new-user" style="display:block;width:100%;text-align:center;background:none;border:none;color:var(--ink-soft);font-size:13px;margin-top:20px;cursor:pointer;text-decoration:underline;font-family:inherit;">Primeiro acesso? Criar conta</button>
+  </div>
+</div>
+
+<!-- PIN overlay -->
+<div id="pin-overlay">
+  <div id="pin-box">
+    <h3 id="pin-title">Entrar</h3>
+    <p class="pin-sub" id="pin-sub">Digite seu PIN de 4 dígitos</p>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
     </div>
-    <div class="backup-row">
-      <button id="btn-export">Exportar backup</button>
-      <button id="btn-import">Importar backup</button>
-      <input type="file" id="file-import" accept="application/json" style="display:none">
+    <div class="pin-grid">
+      <button class="pin-btn" data-n="1">1</button>
+      <button class="pin-btn" data-n="2">2</button>
+      <button class="pin-btn" data-n="3">3</button>
+      <button class="pin-btn" data-n="4">4</button>
+      <button class="pin-btn" data-n="5">5</button>
+      <button class="pin-btn" data-n="6">6</button>
+      <button class="pin-btn" data-n="7">7</button>
+      <button class="pin-btn" data-n="8">8</button>
+      <button class="pin-btn" data-n="9">9</button>
+      <button class="pin-btn del" id="pin-cancel-btn" style="font-size:13px;color:var(--ink-soft)">Voltar</button>
+      <button class="pin-btn" data-n="0">0</button>
+      <button class="pin-btn del" id="pin-del">⌫</button>
     </div>
-  </header>
-  <main id="list"></main>
-</div>
-
-<div class="toast" id="toast"></div>
-<button class="fab" id="fab">+</button>
-<div class="overlay" id="overlay"></div>
-
-<!-- Sheet 1: Nova compra (FAB) -->
-<div class="sheet" id="sheet-new">
-  <h2>Nova compra</h2>
-  <div class="field">
-    <label>Cliente</label>
-    <input id="new-nome" type="text" placeholder="Nome de quem comprou" autocomplete="off" list="dl-clientes">
-    <datalist id="dl-clientes"></datalist>
-  </div>
-  <div class="field">
-    <label>O que comprou</label>
-    <input id="new-desc" type="text" placeholder="ex: arroz, feijão, pão..." autocomplete="off">
-  </div>
-  <div class="field">
-    <label>Valor (R$)</label>
-    <input id="new-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
-  </div>
-  <div class="sheet-actions">
-    <button class="btn-cancel" id="btn-cancel-new">Cancelar</button>
-    <button class="btn-save" id="btn-save-new">Salvar</button>
+    <p class="pin-error" id="pin-error"></p>
   </div>
 </div>
 
-<!-- Sheet 2: Detalhe do cliente -->
-<div class="sheet" id="sheet-detail">
-  <h2 id="det-nome">Cliente</h2>
-  <p class="saldo-destaque" id="det-saldo">R$ 0,00</p>
-  <div class="detail-btns">
-    <button class="btn-outline" id="btn-det-compra">+ Nova compra</button>
-    <button class="btn-solid" id="btn-det-pag">💰 Pagamento</button>
-  </div>
-  <p class="section-label">Histórico</p>
-  <div id="det-lancamentos"></div>
-  <button class="del-link" id="btn-del-cliente">Excluir cliente</button>
+<!-- Novo usuário overlay -->
+<div id="pin-overlay" style="display:none" id="new-user-overlay">
 </div>
 
-<!-- Sheet 3: Compra (de dentro do detalhe) -->
-<div class="sheet above" id="sheet-compra">
-  <h2 id="compra-titulo">Nova compra</h2>
-  <div class="field">
-    <label>O que comprou</label>
-    <input id="compra-desc" type="text" placeholder="ex: arroz, feijão, pão..." autocomplete="off">
+<!-- ===== APP ===== -->
+<div id="screen-app">
+  <div class="margin-line"></div>
+  <div class="app">
+    <header>
+      <div class="header-top">
+        <div>
+          <h1 class="title">Caderninho</h1>
+          <p class="subtitle">seu controle de fiado</p>
+        </div>
+        <button class="user-badge" id="btn-logout" title="Trocar usuário">
+          <div class="user-avatar" id="badge-avatar">?</div>
+          <span class="user-badge-name" id="badge-name">...</span>
+        </button>
+      </div>
+      <div class="balance-row">
+        <span class="balance-label">Total em aberto</span>
+        <span class="balance-value" id="balance">R$ 0,00</span>
+      </div>
+      <div class="tabs">
+        <div class="tab active" data-filter="aberto">Em aberto</div>
+        <div class="tab" data-filter="pago">Pago</div>
+        <div class="tab" data-filter="todos">Todos</div>
+      </div>
+      <div class="backup-row">
+        <button id="btn-export">Exportar backup</button>
+        <button id="btn-import">Importar backup</button>
+        <input type="file" id="file-import" accept="application/json" style="display:none">
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="search-input" type="text" placeholder="Buscar cliente..." autocomplete="off">
+        <button class="search-clear" id="search-clear">×</button>
+      </div>
+    </header>
+    <main id="list"></main>
   </div>
-  <div class="field">
-    <label>Valor (R$)</label>
-    <input id="compra-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
+
+  <div class="toast" id="toast"></div>
+  <button class="fab" id="fab">+</button>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Sheet: Nova compra (FAB) -->
+  <div class="sheet" id="sheet-new">
+    <h2>Nova compra</h2>
+    <div class="field">
+      <label>Cliente</label>
+      <input id="new-nome" type="text" placeholder="Nome de quem comprou" autocomplete="off" list="dl-clientes">
+      <datalist id="dl-clientes"></datalist>
+    </div>
+    <div class="field">
+      <label>O que comprou</label>
+      <input id="new-desc" type="text" placeholder="ex: arroz, feijão, pão..." autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Valor (R$)</label>
+      <input id="new-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
+    </div>
+    <div class="sheet-actions">
+      <button class="btn-cancel" id="btn-cancel-new">Cancelar</button>
+      <button class="btn-save" id="btn-save-new">Salvar</button>
+    </div>
   </div>
-  <div class="sheet-actions">
-    <button class="btn-cancel" id="btn-cancel-compra">Cancelar</button>
-    <button class="btn-save" id="btn-save-compra">Salvar</button>
+
+  <!-- Sheet: Detalhe do cliente -->
+  <div class="sheet" id="sheet-detail">
+    <h2 id="det-nome">Cliente</h2>
+    <p class="saldo-destaque" id="det-saldo">R$ 0,00</p>
+    <div class="detail-btns">
+      <button class="btn-outline" id="btn-det-compra">+ Nova compra</button>
+      <button class="btn-solid" id="btn-det-pag">💰 Pagamento</button>
+    </div>
+    <p class="section-label">Histórico</p>
+    <div id="det-lancamentos"></div>
+    <button class="del-link" id="btn-del-cliente">Excluir cliente</button>
+  </div>
+
+  <!-- Sheet: Compra (do detalhe) -->
+  <div class="sheet above" id="sheet-compra">
+    <h2 id="compra-titulo">Nova compra</h2>
+    <div class="field">
+      <label>O que comprou</label>
+      <input id="compra-desc" type="text" placeholder="ex: arroz, feijão, pão..." autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Valor (R$)</label>
+      <input id="compra-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
+    </div>
+    <div class="sheet-actions">
+      <button class="btn-cancel" id="btn-cancel-compra">Cancelar</button>
+      <button class="btn-save" id="btn-save-compra">Salvar</button>
+    </div>
+  </div>
+
+  <!-- Sheet: Pagamento -->
+  <div class="sheet above" id="sheet-pag">
+    <h2 id="pag-titulo">Pagamento</h2>
+    <div class="field">
+      <label>Valor recebido (R$)</label>
+      <input id="pag-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
+    </div>
+    <button class="quick-link" id="btn-pagar-tudo">Pagar tudo</button>
+    <div class="sheet-actions">
+      <button class="btn-cancel" id="btn-cancel-pag">Cancelar</button>
+      <button class="btn-save" id="btn-save-pag">Confirmar</button>
+    </div>
   </div>
 </div>
 
-<!-- Sheet 4: Pagamento (de dentro do detalhe) -->
-<div class="sheet above" id="sheet-pag">
-  <h2 id="pag-titulo">Pagamento</h2>
-  <div class="field">
-    <label>Valor recebido (R$)</label>
-    <input id="pag-valor" type="text" inputmode="numeric" placeholder="0,00" autocomplete="off">
-  </div>
-  <button class="quick-link" id="btn-pagar-tudo">Pagar tudo</button>
-  <div class="sheet-actions">
-    <button class="btn-cancel" id="btn-cancel-pag">Cancelar</button>
-    <button class="btn-save" id="btn-save-pag">Confirmar</button>
+<!-- Novo usuário overlay (reutiliza pin-overlay) -->
+<div id="new-user-overlay" style="position:fixed;inset:0;z-index:60;background:rgba(43,42,36,0.5);display:none;align-items:flex-end;justify-content:center;">
+  <div id="new-user-box" style="background:var(--card);border-radius:18px 18px 0 0;width:100%;max-width:400px;padding:24px 24px calc(24px + env(safe-area-inset-bottom));">
+    <h3 style="font-family:'Caveat',cursive;font-size:26px;margin:0 0 16px;color:var(--ink);">Novo usuário</h3>
+    <div class="field">
+      <label>Nome</label>
+      <input id="nu-nome" type="text" placeholder="Nome do usuário" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>PIN (4 dígitos)</label>
+      <input id="nu-pin" type="text" inputmode="numeric" maxlength="4" placeholder="ex: 1234" autocomplete="off">
+    </div>
+    <div class="sheet-actions">
+      <button class="btn-cancel" id="btn-cancel-nu">Cancelar</button>
+      <button class="btn-save" id="btn-save-nu">Criar</button>
+    </div>
   </div>
 </div>
 
 <script>
 // ===== CONFIG =====
-const URL_BASE  = 'https://rgdpudnuwvdtdznpzqzk.supabase.co/rest/v1';
-const KEY       = 'sb_publishable_lEIYdfrQu5YUGPl3pKWD6w_O1yNjsBa';
+const URL_BASE = 'https://rgdpudnuwvdtdznpzqzk.supabase.co/rest/v1';
+const KEY = 'sb_publishable_lEIYdfrQu5YUGPl3pKWD6w_O1yNjsBa';
 const H = { 'apikey':KEY, 'Authorization':'Bearer '+KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' };
 
 // ===== DB =====
@@ -204,7 +361,9 @@ async function db(path, method='GET', body){
   if(r.status===204 || method==='DELETE') return null;
   return r.json();
 }
-const getClientes    = ()      => db('clientes?select=*&order=last_update.desc');
+const getUsuarios    = ()      => db('usuarios?select=*&order=nome.asc');
+const insertUsuario  = u       => db('usuarios','POST',u);
+const getClientes    = uid     => db(`clientes?select=*&usuario_id=eq.${uid}&order=last_update.desc`);
 const insertCliente  = c       => db('clientes','POST',c);
 const updateCliente  = (id,f)  => db(`clientes?id=eq.${id}`,'PATCH',f);
 const deleteCliente  = id      => db(`clientes?id=eq.${id}`,'DELETE');
@@ -212,19 +371,24 @@ const getLancamentos = cid     => db(`lancamentos?cliente_id=eq.${cid}&order=dat
 const insertLanc     = l       => db('lancamentos','POST',l);
 
 // ===== STATE =====
+let usuarios = [];
+let currentUser = null;
 let clientes = [];
 let filter = 'aberto';
 let currentId = null;
 let busy = false;
+let search = '';
+let pinTarget = null; // usuario sendo autenticado
 
 // ===== UTILS =====
-const $  = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today = () => { const d=new Date(); return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10); };
 const fmtDt = iso => { if(!iso) return ''; const [,m,d]=iso.split('-'); return `${d}/${m}`; };
 const fmtR$ = v => Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const r2 = n => Math.round(n*100)/100;
 const uid = () => Date.now()+'-'+Math.random().toString(36).slice(2,7);
+const initials = nome => nome.trim().charAt(0).toUpperCase();
 
 let _tt;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),2800); }
@@ -232,28 +396,140 @@ function setBusy(v){ busy=v; ['fab','btn-save-new','btn-save-compra','btn-save-p
 function clearErr(...ids){ ids.forEach(id=>$(id).classList.remove('error')); }
 function setErr(...ids){ ids.forEach(id=>$(id).classList.add('error')); }
 
-// ===== MONEY INPUT =====
+// money
 function moneyFmt(el){
-  el.addEventListener('input', ()=>{
-    let digits = el.value.replace(/\D/g,'');
-    if(!digits){ el.value=''; return; }
-    let cents = parseInt(digits,10);
-    let reais = cents/100;
-    el.value = reais.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  el.addEventListener('input',()=>{
+    let digits=el.value.replace(/\D/g,'');
+    if(!digits){el.value='';return;}
+    el.value=(parseInt(digits,10)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   });
 }
-function parseMoney(el){
-  const raw = el.value.replace(/\./g,'').replace(',','.');
-  return parseFloat(raw)||0;
-}
-// aplica nos 3 inputs de valor
-['new-valor','compra-valor','pag-valor'].forEach(id=>moneyFmt($(id)));
+function parseMoney(el){ return parseFloat(el.value.replace(/\./g,'').replace(',','.'))||0; }
 
-// ===== RENDER =====
+// ===== LOGIN SCREEN =====
+async function loadLogin(){
+  try{ usuarios = await getUsuarios(); }
+  catch(e){
+    $('login-nome-error').textContent='Sem conexão. Verifique a internet.';
+    console.error(e);
+  }
+}
+
+function renderUserList(){ /* não lista mais */ }
+
+// continuar com nome digitado
+$('btn-login-continuar').addEventListener('click', tentarLogin);
+$('login-nome-input').addEventListener('keydown', e=>{ if(e.key==='Enter') tentarLogin(); });
+
+function tentarLogin(){
+  const nome = $('login-nome-input').value.trim();
+  if(!nome){ $('login-nome-error').textContent='Digite seu nome.'; return; }
+  $('login-nome-error').textContent='';
+  const u = usuarios.find(x=>x.nome.trim().toLowerCase()===nome.toLowerCase());
+  if(!u){ $('login-nome-error').textContent='Usuário não encontrado.'; return; }
+  openPin(u);
+}
+
+// ===== PIN =====
+let pinBuffer = '';
+
+function openPin(usuario){
+  pinTarget = usuario;
+  pinBuffer = '';
+  $('pin-title').textContent = `Olá, ${usuario.nome}`;
+  $('pin-sub').textContent = 'Digite seu PIN de 4 dígitos';
+  $('pin-error').textContent = '';
+  updateDots();
+  $('pin-overlay').style.display = 'flex';
+}
+function closePin(){
+  $('pin-overlay').style.display = 'none';
+  pinBuffer = '';
+  pinTarget = null;
+}
+function updateDots(){
+  document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pinBuffer.length));
+}
+function pinErr(msg){ $('pin-error').textContent=msg; pinBuffer=''; updateDots(); }
+
+document.querySelectorAll('.pin-btn[data-n]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(pinBuffer.length>=4) return;
+    pinBuffer += btn.dataset.n;
+    updateDots();
+    if(pinBuffer.length===4) setTimeout(checkPin,120);
+  });
+});
+$('pin-del').addEventListener('click',()=>{ pinBuffer=pinBuffer.slice(0,-1); updateDots(); $('pin-error').textContent=''; });
+$('pin-cancel-btn').addEventListener('click', closePin);
+
+function checkPin(){
+  if(!pinTarget) return;
+  if(pinBuffer === pinTarget.pin){
+    sessionStorage.setItem('userId', pinTarget.id);
+    sessionStorage.setItem('userName', pinTarget.nome);
+    closePin();
+    enterApp(pinTarget);
+  } else {
+    pinErr('PIN incorreto. Tente novamente.');
+  }
+}
+
+// ===== NOVO USUÁRIO =====
+$('btn-show-new-user').addEventListener('click',()=>{
+  $('nu-nome').value=''; $('nu-pin').value='';
+  clearErr('nu-nome','nu-pin');
+  $('new-user-overlay').style.display='flex';
+  setTimeout(()=>$('nu-nome').focus(),200);
+});
+$('btn-cancel-nu').addEventListener('click',()=>{ $('new-user-overlay').style.display='none'; });
+
+$('btn-save-nu').addEventListener('click', async ()=>{
+  const nome = $('nu-nome').value.trim();
+  const pin  = $('nu-pin').value.trim();
+  let ok=true;
+  if(!nome){ setErr('nu-nome'); ok=false; } else clearErr('nu-nome');
+  if(!/^\d{4}$/.test(pin)){ setErr('nu-pin'); ok=false; } else clearErr('nu-pin');
+  if(!ok) return;
+  try{
+    $('btn-save-nu').disabled=true;
+    const [row] = await insertUsuario({id:uid(), nome, pin});
+    usuarios.push(row);
+    renderUserList();
+    $('new-user-overlay').style.display='none';
+    toast('Usuário criado!');
+  }catch(e){ alert('Erro ao criar usuário.'); }
+  finally{ $('btn-save-nu').disabled=false; }
+});
+
+// ===== ENTRAR NO APP =====
+function enterApp(usuario){
+  currentUser = usuario;
+  $('screen-login').style.display='none';
+  $('screen-app').style.display='block';
+  $('badge-avatar').textContent = initials(usuario.nome);
+  $('badge-name').textContent = usuario.nome;
+  loadApp();
+}
+
+$('btn-logout').addEventListener('click',()=>{
+  if(!confirm('Sair e trocar de usuário?')) return;
+  sessionStorage.removeItem('userId');
+  sessionStorage.removeItem('userName');
+  currentUser=null; clientes=[];
+  $('screen-app').style.display='none';
+  $('screen-login').style.display='flex';
+  $('login-nome-input').value='';
+  $('login-nome-error').textContent='';
+  loadLogin();
+});
+
+// ===== APP: RENDER =====
 function getFiltered(){
   let l = clientes.slice();
   if(filter==='aberto') l=l.filter(c=>Number(c.saldo)>0);
   if(filter==='pago')   l=l.filter(c=>Number(c.saldo)===0);
+  if(search) l=l.filter(c=>c.nome.toLowerCase().includes(search.toLowerCase()));
   return l.sort((a,b)=>(b.last_update||'').localeCompare(a.last_update||''));
 }
 
@@ -264,234 +540,228 @@ function render(){
   const el = $('list');
   if(!list.length){
     const m={aberto:['Tudo certo!','Nenhum fiado em aberto.'],pago:['Nada ainda','Ninguém quitou ainda.'],todos:['Caderninho vazio','Toque no + para começar.']};
-    const [h,p]=m[filter];
+    const [h,p]=m[filter]||m.todos;
     el.innerHTML=`<div class="empty"><span>${h}</span>${p}</div>`;
     return;
   }
   el.innerHTML = list.map(c=>{
-    const pago = Number(c.saldo)===0;
+    const pago=Number(c.saldo)===0;
     return `<div class="entry" data-id="${c.id}">
       <div class="entry-info">
         <span class="entry-name">${esc(c.nome)}</span>
         <span class="entry-sub">atualizado ${fmtDt(c.last_update)}</span>
       </div>
       <div class="entry-right">
-        ${pago ? '<span class="stamp">PAGO</span>' : `<span class="entry-value">${fmtR$(c.saldo)}</span>`}
+        ${pago?'<span class="stamp">PAGO</span>':`<span class="entry-value">${fmtR$(c.saldo)}</span>`}
       </div>
     </div>`;
   }).join('');
 }
 
-// ===== INIT =====
-async function load(){
+async function loadApp(){
   $('list').innerHTML='<div class="loading">Carregando</div>';
   try{
-    clientes = (await getClientes()).map(r=>({...r,saldo:Number(r.saldo)}));
+    clientes=(await getClientes(currentUser.id)).map(r=>({...r,saldo:Number(r.saldo)}));
     render();
   }catch(e){
-    $('list').innerHTML='<div class="empty"><span>Erro de conexão</span>Verifique a internet e recarregue.</div>';
-    console.error(e);
+    $('list').innerHTML='<div class="empty"><span>Erro de conexão</span>Verifique a internet.</div>';
   }
 }
 
 // ===== LIST CLICK =====
-$('list').addEventListener('click', ev=>{
-  const row = ev.target.closest('.entry');
+$('list').addEventListener('click',ev=>{
+  const row=ev.target.closest('.entry');
   if(row) openDetail(row.dataset.id);
 });
 document.querySelectorAll('header>.tabs>.tab').forEach(t=>{
   t.addEventListener('click',()=>{ filter=t.dataset.filter; render(); });
 });
 
-// ===== OVERLAY =====
-$('overlay').addEventListener('click', closeAll);
-function closeAll(){
-  document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show'));
-  $('overlay').classList.remove('show');
-}
-function closeTop(){
-  // fecha só o sheet "above" (compra ou pagamento)
-  ['sheet-compra','sheet-pag'].forEach(id=>$(id).classList.remove('show'));
-}
+// ===== BUSCA =====
+$('search-input').addEventListener('input',e=>{
+  search=e.target.value;
+  $('search-clear').style.display=search?'block':'none';
+  render();
+});
+$('search-clear').addEventListener('click',()=>{ search=''; $('search-input').value=''; $('search-clear').style.display='none'; render(); });
 
-// ===== FAB: NOVA COMPRA =====
-$('fab').addEventListener('click', ()=>{
+// ===== OVERLAY =====
+$('overlay').addEventListener('click',closeAll);
+function closeAll(){ document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('show')); $('overlay').classList.remove('show'); }
+function closeTop(){ ['sheet-compra','sheet-pag'].forEach(id=>$(id).classList.remove('show')); }
+
+// ===== FAB =====
+$('fab').addEventListener('click',()=>{
   clearErr('new-nome','new-desc','new-valor');
   ['new-nome','new-desc','new-valor'].forEach(id=>$(id).value='');
-  $('dl-clientes').innerHTML = clientes.map(c=>`<option value="${esc(c.nome)}">`).join('');
-  $('sheet-new').classList.add('show');
-  $('overlay').classList.add('show');
+  $('dl-clientes').innerHTML=clientes.map(c=>`<option value="${esc(c.nome)}">`).join('');
+  $('sheet-new').classList.add('show'); $('overlay').classList.add('show');
   setTimeout(()=>$('new-nome').focus(),250);
 });
-$('btn-cancel-new').addEventListener('click', closeAll);
+$('btn-cancel-new').addEventListener('click',closeAll);
 
-$('btn-save-new').addEventListener('click', async ()=>{
-  const nome  = $('new-nome').value.trim();
-  const desc  = $('new-desc').value.trim();
-  const valor = parseMoney($('new-valor'));
+$('btn-save-new').addEventListener('click',async()=>{
+  const nome=$('new-nome').value.trim();
+  const desc=$('new-desc').value.trim();
+  const valor=parseMoney($('new-valor'));
   let ok=true;
-  if(!nome)       { setErr('new-nome');  ok=false; } else clearErr('new-nome');
-  if(!valor||valor<=0){ setErr('new-valor'); ok=false; } else clearErr('new-valor');
+  if(!nome){setErr('new-nome');ok=false;}else clearErr('new-nome');
+  if(!valor||valor<=0){setErr('new-valor');ok=false;}else clearErr('new-valor');
   if(!ok) return;
   setBusy(true);
   try{
-    const t = today();
-    let c = clientes.find(x=>x.nome.trim().toLowerCase()===nome.toLowerCase());
+    const t=today();
+    let c=clientes.find(x=>x.nome.trim().toLowerCase()===nome.toLowerCase());
     if(!c){
-      const [row] = await insertCliente({id:uid(), nome, saldo:0, last_update:t});
-      c = {...row, saldo:0};
+      const [row]=await insertCliente({id:uid(),usuario_id:currentUser.id,nome,saldo:0,last_update:t});
+      c={...row,saldo:0};
       clientes.push(c);
     }
-    const ns = r2(Number(c.saldo)+valor);
-    await updateCliente(c.id,{saldo:ns, last_update:t});
-    await insertLanc({id:uid(), cliente_id:c.id, tipo:'compra', descricao:desc||'Compra', valor, data:t});
+    const ns=r2(Number(c.saldo)+valor);
+    await updateCliente(c.id,{saldo:ns,last_update:t});
+    await insertLanc({id:uid(),cliente_id:c.id,tipo:'compra',descricao:desc||'Compra',valor,data:t});
     c.saldo=ns; c.last_update=t;
     render(); closeAll(); toast('Compra salva!');
-  }catch(e){ toast('Erro ao salvar. Verifique a internet.'); console.error(e); }
-  finally{ setBusy(false); }
+  }catch(e){toast('Erro ao salvar.');console.error(e);}
+  finally{setBusy(false);}
 });
 
 // ===== DETAIL =====
 async function openDetail(id){
-  const c = clientes.find(x=>x.id===id);
-  if(!c) return;
-  currentId = id;
-  $('det-nome').textContent = c.nome;
-  $('det-saldo').textContent = fmtR$(c.saldo);
-  $('det-lancamentos').innerHTML = '<div class="loading">Carregando histórico</div>';
-  $('sheet-detail').classList.add('show');
-  $('overlay').classList.add('show');
+  const c=clientes.find(x=>x.id===id); if(!c) return;
+  currentId=id;
+  $('det-nome').textContent=c.nome;
+  $('det-saldo').textContent=fmtR$(c.saldo);
+  $('det-lancamentos').innerHTML='<div class="loading">Carregando histórico</div>';
+  $('sheet-detail').classList.add('show'); $('overlay').classList.add('show');
   await refreshLancs();
 }
 
 async function refreshLancs(){
   try{
-    const lancs = await getLancamentos(currentId);
-    if(!lancs.length){
-      $('det-lancamentos').innerHTML='<div class="empty" style="padding:20px 0"><span>Sem histórico</span>Nenhum lançamento ainda.</div>';
-      return;
-    }
-    $('det-lancamentos').innerHTML = lancs.map(l=>{
-      const isC = l.tipo==='compra';
+    const lancs=await getLancamentos(currentId);
+    if(!lancs.length){$('det-lancamentos').innerHTML='<div class="empty" style="padding:20px 0"><span>Sem histórico</span>Nenhum lançamento ainda.</div>';return;}
+    $('det-lancamentos').innerHTML=lancs.map(l=>{
+      const isC=l.tipo==='compra';
       return `<div class="lanc">
-        <div class="lanc-info">
-          <span class="lanc-desc">${esc(l.descricao||( isC?'Compra':'Pagamento'))}</span>
-          <span class="lanc-date">${fmtDt(l.data)}</span>
-        </div>
+        <div class="lanc-info"><span class="lanc-desc">${esc(l.descricao||(isC?'Compra':'Pagamento'))}</span><span class="lanc-date">${fmtDt(l.data)}</span></div>
         <span class="lanc-val ${l.tipo}">${isC?'+':'-'} ${fmtR$(l.valor)}</span>
       </div>`;
     }).join('');
-  }catch(e){
-    $('det-lancamentos').innerHTML='<div class="empty" style="padding:20px 0"><span>Erro</span>Não carregou o histórico.</div>';
-  }
+  }catch(e){$('det-lancamentos').innerHTML='<div class="empty" style="padding:20px 0"><span>Erro</span>Não carregou o histórico.</div>';}
 }
 
-// botão + compra (dentro do detalhe)
-$('btn-det-compra').addEventListener('click', ()=>{
-  const c = clientes.find(x=>x.id===currentId); if(!c) return;
-  $('compra-titulo').textContent = `Compra — ${c.nome}`;
-  $('compra-desc').value=''; $('compra-valor').value='';
-  clearErr('compra-desc','compra-valor');
+$('btn-det-compra').addEventListener('click',()=>{
+  const c=clientes.find(x=>x.id===currentId); if(!c) return;
+  $('compra-titulo').textContent=`Compra — ${c.nome}`;
+  $('compra-desc').value=''; $('compra-valor').value=''; clearErr('compra-desc','compra-valor');
   $('sheet-compra').classList.add('show');
   setTimeout(()=>$('compra-desc').focus(),250);
 });
-$('btn-cancel-compra').addEventListener('click', closeTop);
+$('btn-cancel-compra').addEventListener('click',closeTop);
 
-$('btn-save-compra').addEventListener('click', async ()=>{
-  const desc  = $('compra-desc').value.trim();
-  const valor = parseMoney($('compra-valor'));
-  if(!valor||valor<=0){ setErr('compra-valor'); return; } else clearErr('compra-valor');
-  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+$('btn-save-compra').addEventListener('click',async()=>{
+  const desc=$('compra-desc').value.trim();
+  const valor=parseMoney($('compra-valor'));
+  if(!valor||valor<=0){setErr('compra-valor');return;}else clearErr('compra-valor');
+  const c=clientes.find(x=>x.id===currentId); if(!c) return;
   setBusy(true);
   try{
-    const t = today();
-    const ns = r2(Number(c.saldo)+valor);
-    await updateCliente(c.id,{saldo:ns, last_update:t});
-    await insertLanc({id:uid(), cliente_id:c.id, tipo:'compra', descricao:desc||'Compra', valor, data:t});
+    const t=today(); const ns=r2(Number(c.saldo)+valor);
+    await updateCliente(c.id,{saldo:ns,last_update:t});
+    await insertLanc({id:uid(),cliente_id:c.id,tipo:'compra',descricao:desc||'Compra',valor,data:t});
     c.saldo=ns; c.last_update=t;
-    $('det-saldo').textContent = fmtR$(ns);
+    $('det-saldo').textContent=fmtR$(ns);
     render(); closeTop(); await refreshLancs(); toast('Compra adicionada!');
-  }catch(e){ toast('Erro ao salvar.'); console.error(e); }
-  finally{ setBusy(false); }
+  }catch(e){toast('Erro ao salvar.');}
+  finally{setBusy(false);}
 });
 
-// botão pagamento (dentro do detalhe)
-$('btn-det-pag').addEventListener('click', ()=>{
-  const c = clientes.find(x=>x.id===currentId); if(!c) return;
-  $('pag-titulo').textContent = `Pagamento — ${c.nome}`;
+$('btn-det-pag').addEventListener('click',()=>{
+  const c=clientes.find(x=>x.id===currentId); if(!c) return;
+  $('pag-titulo').textContent=`Pagamento — ${c.nome}`;
   $('pag-valor').value=''; clearErr('pag-valor');
   $('sheet-pag').classList.add('show');
   setTimeout(()=>$('pag-valor').focus(),250);
 });
-$('btn-cancel-pag').addEventListener('click', closeTop);
-$('btn-pagar-tudo').addEventListener('click', ()=>{
-  const c = clientes.find(x=>x.id===currentId);
-  if(c) $('pag-valor').value = c.saldo.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+$('btn-cancel-pag').addEventListener('click',closeTop);
+$('btn-pagar-tudo').addEventListener('click',()=>{
+  const c=clientes.find(x=>x.id===currentId);
+  if(c) $('pag-valor').value=c.saldo.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 });
 
-$('btn-save-pag').addEventListener('click', async ()=>{
-  const valor = parseMoney($('pag-valor'));
-  if(!valor||valor<=0){ setErr('pag-valor'); return; } else clearErr('pag-valor');
-  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+$('btn-save-pag').addEventListener('click',async()=>{
+  const valor=parseMoney($('pag-valor'));
+  if(!valor||valor<=0){setErr('pag-valor');return;}else clearErr('pag-valor');
+  const c=clientes.find(x=>x.id===currentId); if(!c) return;
   setBusy(true);
   try{
-    const t = today();
-    const ns = Math.max(0, r2(Number(c.saldo)-valor));
-    await updateCliente(c.id,{saldo:ns, last_update:t});
-    await insertLanc({id:uid(), cliente_id:c.id, tipo:'pagamento', descricao:'Pagamento', valor, data:t});
+    const t=today(); const ns=Math.max(0,r2(Number(c.saldo)-valor));
+    await updateCliente(c.id,{saldo:ns,last_update:t});
+    await insertLanc({id:uid(),cliente_id:c.id,tipo:'pagamento',descricao:'Pagamento',valor,data:t});
     c.saldo=ns; c.last_update=t;
-    $('det-saldo').textContent = fmtR$(ns);
+    $('det-saldo').textContent=fmtR$(ns);
     render(); closeTop(); await refreshLancs(); toast('Pagamento registrado!');
-  }catch(e){ toast('Erro ao salvar.'); console.error(e); }
-  finally{ setBusy(false); }
+  }catch(e){toast('Erro ao salvar.');}
+  finally{setBusy(false);}
 });
 
-// excluir cliente
-$('btn-del-cliente').addEventListener('click', async ()=>{
-  const c = clientes.find(x=>x.id===currentId); if(!c) return;
+$('btn-del-cliente').addEventListener('click',async()=>{
+  const c=clientes.find(x=>x.id===currentId); if(!c) return;
   if(!confirm(`Excluir "${c.nome}" e todo o histórico?`)) return;
   setBusy(true);
   try{
-    await deleteCliente(c.id); // cascade deletes lancamentos
-    clientes = clientes.filter(x=>x.id!==c.id);
+    await deleteCliente(c.id);
+    clientes=clientes.filter(x=>x.id!==c.id);
     closeAll(); render(); toast('Cliente removido');
-  }catch(e){ toast('Erro ao excluir.'); }
-  finally{ setBusy(false); }
+  }catch(e){toast('Erro ao excluir.');}
+  finally{setBusy(false);}
 });
 
 // ===== BACKUP =====
-$('btn-export').addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify({v:2, clientes, at:new Date().toISOString()},null,2)],{type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href=url; a.download=`fiado-${today()}.json`;
+$('btn-export').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify({v:3,usuario:currentUser.nome,clientes,at:new Date().toISOString()},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a');
+  a.href=url; a.download=`fiado-${currentUser.nome}-${today()}.json`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 });
-$('btn-import').addEventListener('click', ()=>$('file-import').click());
-$('file-import').addEventListener('change', async e=>{
+$('btn-import').addEventListener('click',()=>$('file-import').click());
+$('file-import').addEventListener('change',async e=>{
   const file=e.target.files[0]; if(!file) return; e.target.value='';
   const reader=new FileReader();
   reader.onload=async ev=>{
     try{
       const p=JSON.parse(ev.target.result);
-      const list = p.v===2 ? p.clientes : p;
+      const list=p.v>=2?p.clientes:p;
       if(!Array.isArray(list)) throw new Error();
       if(!confirm(`Importar ${list.length} cliente(s)? Substitui os dados atuais.`)) return;
       setBusy(true);
       try{
         for(const c of clientes) await deleteCliente(c.id);
-        for(const c of list) await insertCliente({id:c.id, nome:c.nome, saldo:Number(c.saldo)||0, last_update:c.last_update||today()});
+        for(const c of list) await insertCliente({id:c.id,usuario_id:currentUser.id,nome:c.nome,saldo:Number(c.saldo)||0,last_update:c.last_update||today()});
         clientes=list.map(c=>({...c,saldo:Number(c.saldo)||0}));
         render(); toast('Backup importado!');
-      }catch(e){ toast('Erro ao importar.'); }
-      finally{ setBusy(false); }
-    }catch{ alert('Arquivo inválido.'); }
+      }catch(e){toast('Erro ao importar.');}
+      finally{setBusy(false);}
+    }catch{alert('Arquivo inválido.');}
   };
   reader.readAsText(file);
 });
 
-// ===== GO =====
-load();
+// ===== MONEY INPUTS =====
+['new-valor','compra-valor','pag-valor'].forEach(id=>moneyFmt($(id)));
+
+// ===== INIT =====
+const savedUserId = sessionStorage.getItem('userId');
+const savedUserName = sessionStorage.getItem('userName');
+if(savedUserId && savedUserName){
+  // já estava logado nessa sessão
+  currentUser = {id:savedUserId, nome:savedUserName};
+  $('screen-login').style.display='none';
+  enterApp(currentUser);
+} else {
+  loadLogin();
+}
 </script>
 </body>
 </html>
