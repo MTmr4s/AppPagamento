@@ -466,10 +466,11 @@ $('pin-cancel-btn').addEventListener('click', closePin);
 function checkPin(){
   if(!pinTarget) return;
   if(pinBuffer === pinTarget.pin){
-    sessionStorage.setItem('userId', pinTarget.id);
-    sessionStorage.setItem('userName', pinTarget.nome);
+    const user = pinTarget; // salva antes do closePin() zerar
+    sessionStorage.setItem('userId', user.id);
+    sessionStorage.setItem('userName', user.nome);
     closePin();
-    enterApp(pinTarget);
+    enterApp(user);
   } else {
     pinErr('PIN incorreto. Tente novamente.');
   }
