@@ -352,26 +352,50 @@ main{ flex:1; padding-bottom:120px; }
 // ===== CONFIG =====
 const URL_BASE = 'https://rgdpudnuwvdtdznpzqzk.supabase.co/rest/v1';
 const KEY = 'sb_publishable_lEIYdfrQu5YUGPl3pKWD6w_O1yNjsBa';
-const H = { 'apikey':KEY, 'Authorization':'Bearer '+KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' };
+const H = { 'apikey':KEY, 'Authorization':'Bearer '+KEY, 'Content-Type':'application/json' };
 
 // ===== DB =====
-async function db(path, method='GET', body){
-  const r = await fetch(URL_BASE+'/'+path, { method, headers:H, body: body ? JSON.stringify(body) : undefined });
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
-  if(r.status===204 || method==='DELETE') return null;
-  return r.json();
+// Tudo passa por funções no banco (rpc). O navegador não acessa mais as tabelas.
+// Erros do banco chegam como código curto (ex.: 'sessao_invalida') em err.code.
+async function rpc(fn, args={}){
+  let r;
+  try{
+    r = await fetch(`${URL_BASE}/rpc/${fn}`, { method:'POST', headers:H, body: JSON.stringify(args) });
+  }catch(e){
+    const err = new Error('Sem conexão'); err.code = 'sem_conexao'; throw err;
+  }
+  if(!r.ok){
+    let msg = '';
+    try{ msg = (await r.json()).message || ''; }catch{ /* resposta sem JSON */ }
+    const err = new Error(msg || `HTTP ${r.status}`); err.code = msg; throw err;
+  }
+  if(r.status===204) return null;
+  const txt = await r.text();
+  return txt ? JSON.parse(txt) : null;
 }
-const getUsuarios    = ()      => db('usuarios?select=*&order=nome.asc');
-const insertUsuario  = u       => db('usuarios','POST',u);
-const getClientes    = uid     => db(`clientes?select=*&usuario_id=eq.${uid}&order=last_update.desc`);
-const insertCliente  = c       => db('clientes','POST',c);
-const updateCliente  = (id,f)  => db(`clientes?id=eq.${id}`,'PATCH',f);
-const deleteCliente  = id      => db(`clientes?id=eq.${id}`,'DELETE');
-const getLancamentos = cid     => db(`lancamentos?cliente_id=eq.${cid}&order=data.desc`);
-const insertLanc     = l       => db('lancamentos','POST',l);
+
+// Chamada que exige login: manda o token e, se a sessão venceu, volta pro login
+async function rpcAuth(fn, args={}){
+  try{
+    return await rpc(fn, { p_token: token, ...args });
+  }catch(e){
+    if(e.code==='sessao_invalida') forceLogout('Sessão expirada. Entre de novo.');
+    throw e;
+  }
+}
+
+const criarUsuario      = (nome,pin)            => rpc('criar_usuario', { p_nome:nome, p_pin:pin });
+const doLogin           = (nome,pin)            => rpc('login', { p_nome:nome, p_pin:pin });
+const doLogout          = ()                    => rpc('logout', { p_token: token });
+const getClientes       = ()                    => rpcAuth('listar_clientes');
+const getLancamentos    = cid                   => rpcAuth('listar_lancamentos', { p_cliente_id:cid });
+const registrarCompra   = (cid,nome,desc,valor) => rpcAuth('registrar_compra', { p_cliente_id:cid, p_nome:nome, p_descricao:desc, p_valor:valor });
+const registrarPag      = (cid,valor)           => rpcAuth('registrar_pagamento', { p_cliente_id:cid, p_valor:valor });
+const excluirCliente    = cid                   => rpcAuth('excluir_cliente', { p_cliente_id:cid });
+const importarBackup    = list                  => rpcAuth('importar_backup', { p_clientes:list });
 
 // ===== STATE =====
-let usuarios = [];
+let token = null;        // token de sessão devolvido pelo login
 let currentUser = null;
 let clientes = [];
 let filter = 'aberto';
@@ -390,6 +414,14 @@ const r2 = n => Math.round(n*100)/100;
 const uid = () => Date.now()+'-'+Math.random().toString(36).slice(2,7);
 const initials = nome => nome.trim().charAt(0).toUpperCase();
 
+// Atualiza (ou adiciona) na lista local o cliente que o banco devolveu
+function upsertLocal(row){
+  const c={...row,saldo:Number(row.saldo)};
+  const i=clientes.findIndex(x=>x.id===c.id);
+  if(i>=0) clientes[i]=c; else clientes.push(c);
+  return c;
+}
+
 let _tt;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),2800); }
 function setBusy(v){ busy=v; ['fab','btn-save-new','btn-save-compra','btn-save-pag'].forEach(id=>$(id).disabled=v); }
@@ -407,15 +439,8 @@ function moneyFmt(el){
 function parseMoney(el){ return parseFloat(el.value.replace(/\./g,'').replace(',','.'))||0; }
 
 // ===== LOGIN SCREEN =====
-async function loadLogin(){
-  try{ usuarios = await getUsuarios(); }
-  catch(e){
-    $('login-nome-error').textContent='Sem conexão. Verifique a internet.';
-    console.error(e);
-  }
-}
-
-function renderUserList(){ /* não lista mais */ }
+// A lista de usuários não é mais baixada: nome e PIN são conferidos no banco.
+function loadLogin(){ $('login-nome-error').textContent=''; }
 
 // continuar com nome digitado
 $('btn-login-continuar').addEventListener('click', tentarLogin);
@@ -425,9 +450,7 @@ function tentarLogin(){
   const nome = $('login-nome-input').value.trim();
   if(!nome){ $('login-nome-error').textContent='Digite seu nome.'; return; }
   $('login-nome-error').textContent='';
-  const u = usuarios.find(x=>x.nome.trim().toLowerCase()===nome.toLowerCase());
-  if(!u){ $('login-nome-error').textContent='Usuário não encontrado.'; return; }
-  openPin(u);
+  openPin({ nome });
 }
 
 // ===== PIN =====
@@ -463,16 +486,29 @@ document.querySelectorAll('.pin-btn[data-n]').forEach(btn=>{
 $('pin-del').addEventListener('click',()=>{ pinBuffer=pinBuffer.slice(0,-1); updateDots(); $('pin-error').textContent=''; });
 $('pin-cancel-btn').addEventListener('click', closePin);
 
-function checkPin(){
-  if(!pinTarget) return;
-  if(pinBuffer === pinTarget.pin){
-    const user = pinTarget; // salva antes do closePin() zerar
-    sessionStorage.setItem('userId', user.id);
-    sessionStorage.setItem('userName', user.nome);
+let checkingPin = false;
+async function checkPin(){
+  if(!pinTarget || checkingPin) return;
+  checkingPin = true;
+  $('pin-error').textContent = 'Conferindo...';
+  try{
+    const res = await doLogin(pinTarget.nome, pinBuffer);
+    if(!res || res.erro){
+      // erro de login vem no corpo (não como exception) pra o bloqueio funcionar
+      const err = new Error(res ? res.erro : 'resposta_vazia'); err.code = res ? res.erro : ''; throw err;
+    }
+    token = res.token;
+    sessionStorage.setItem('token', res.token);
+    sessionStorage.setItem('userName', res.nome);
     closePin();
-    enterApp(user);
-  } else {
-    pinErr('PIN incorreto. Tente novamente.');
+    enterApp({ nome: res.nome });
+  }catch(e){
+    if(e.code==='credenciais_invalidas') pinErr('Nome ou PIN incorreto.');
+    else if(e.code==='bloqueado')        pinErr('Muitas tentativas. Aguarde 5 minutos.');
+    else if(e.code==='sem_conexao')      pinErr('Sem conexão. Verifique a internet.');
+    else { pinErr('Erro ao entrar. Tente de novo.'); console.error(e); }
+  }finally{
+    checkingPin = false;
   }
 }
 
@@ -494,12 +530,15 @@ $('btn-save-nu').addEventListener('click', async ()=>{
   if(!ok) return;
   try{
     $('btn-save-nu').disabled=true;
-    const [row] = await insertUsuario({id:uid(), nome, pin});
-    usuarios.push(row);
-    renderUserList();
+    await criarUsuario(nome, pin);
     $('new-user-overlay').style.display='none';
-    toast('Usuário criado!');
-  }catch(e){ alert('Erro ao criar usuário.'); }
+    $('login-nome-input').value = nome;
+    toast('Usuário criado! Agora é só entrar.');
+  }catch(e){
+    if(e.code==='nome_em_uso') alert('Já existe um usuário com esse nome.');
+    else if(e.code==='sem_conexao') alert('Sem conexão. Verifique a internet.');
+    else { alert('Erro ao criar usuário.'); console.error(e); }
+  }
   finally{ $('btn-save-nu').disabled=false; }
 });
 
@@ -513,16 +552,23 @@ function enterApp(usuario){
   loadApp();
 }
 
-$('btn-logout').addEventListener('click',()=>{
-  if(!confirm('Sair e trocar de usuário?')) return;
-  sessionStorage.removeItem('userId');
+// Limpa a sessão local e volta pra tela de login (msg opcional)
+function forceLogout(msg){
+  sessionStorage.removeItem('token');
   sessionStorage.removeItem('userName');
-  currentUser=null; clientes=[];
+  token=null; currentUser=null; clientes=[];
+  closeAll();
   $('screen-app').style.display='none';
   $('screen-login').style.display='flex';
   $('login-nome-input').value='';
-  $('login-nome-error').textContent='';
   loadLogin();
+  if(msg) $('login-nome-error').textContent=msg;
+}
+
+$('btn-logout').addEventListener('click',()=>{
+  if(!confirm('Sair e trocar de usuário?')) return;
+  doLogout().catch(()=>{ /* se falhar, a sessão vence sozinha em 7 dias */ });
+  forceLogout();
 });
 
 // ===== APP: RENDER =====
@@ -562,9 +608,10 @@ function render(){
 async function loadApp(){
   $('list').innerHTML='<div class="loading">Carregando</div>';
   try{
-    clientes=(await getClientes(currentUser.id)).map(r=>({...r,saldo:Number(r.saldo)}));
+    clientes=(await getClientes()).map(r=>({...r,saldo:Number(r.saldo)}));
     render();
   }catch(e){
+    if(e.code==='sessao_invalida') return; // já voltou pro login
     $('list').innerHTML='<div class="empty"><span>Erro de conexão</span>Verifique a internet.</div>';
   }
 }
@@ -611,19 +658,12 @@ $('btn-save-new').addEventListener('click',async()=>{
   if(!ok) return;
   setBusy(true);
   try{
-    const t=today();
-    let c=clientes.find(x=>x.nome.trim().toLowerCase()===nome.toLowerCase());
-    if(!c){
-      const [row]=await insertCliente({id:uid(),usuario_id:currentUser.id,nome,saldo:0,last_update:t});
-      c={...row,saldo:0};
-      clientes.push(c);
-    }
-    const ns=r2(Number(c.saldo)+valor);
-    await updateCliente(c.id,{saldo:ns,last_update:t});
-    await insertLanc({id:uid(),cliente_id:c.id,tipo:'compra',descricao:desc||'Compra',valor,data:t});
-    c.saldo=ns; c.last_update=t;
+    // se o cliente já existe usa o id; senão o banco cria pelo nome
+    const existente=clientes.find(x=>x.nome.trim().toLowerCase()===nome.toLowerCase());
+    const row=await registrarCompra(existente?existente.id:null, nome, desc||'Compra', valor);
+    upsertLocal(row);
     render(); closeAll(); toast('Compra salva!');
-  }catch(e){toast('Erro ao salvar.');console.error(e);}
+  }catch(e){ if(e.code!=='sessao_invalida') toast('Erro ao salvar.'); console.error(e); }
   finally{setBusy(false);}
 });
 
@@ -668,13 +708,11 @@ $('btn-save-compra').addEventListener('click',async()=>{
   const c=clientes.find(x=>x.id===currentId); if(!c) return;
   setBusy(true);
   try{
-    const t=today(); const ns=r2(Number(c.saldo)+valor);
-    await updateCliente(c.id,{saldo:ns,last_update:t});
-    await insertLanc({id:uid(),cliente_id:c.id,tipo:'compra',descricao:desc||'Compra',valor,data:t});
-    c.saldo=ns; c.last_update=t;
-    $('det-saldo').textContent=fmtR$(ns);
+    const row=await registrarCompra(c.id, null, desc||'Compra', valor);
+    const atual=upsertLocal(row);
+    $('det-saldo').textContent=fmtR$(atual.saldo);
     render(); closeTop(); await refreshLancs(); toast('Compra adicionada!');
-  }catch(e){toast('Erro ao salvar.');}
+  }catch(e){ if(e.code!=='sessao_invalida') toast('Erro ao salvar.'); console.error(e); }
   finally{setBusy(false);}
 });
 
@@ -697,13 +735,11 @@ $('btn-save-pag').addEventListener('click',async()=>{
   const c=clientes.find(x=>x.id===currentId); if(!c) return;
   setBusy(true);
   try{
-    const t=today(); const ns=Math.max(0,r2(Number(c.saldo)-valor));
-    await updateCliente(c.id,{saldo:ns,last_update:t});
-    await insertLanc({id:uid(),cliente_id:c.id,tipo:'pagamento',descricao:'Pagamento',valor,data:t});
-    c.saldo=ns; c.last_update=t;
-    $('det-saldo').textContent=fmtR$(ns);
+    const row=await registrarPag(c.id, valor);
+    const atual=upsertLocal(row);
+    $('det-saldo').textContent=fmtR$(atual.saldo);
     render(); closeTop(); await refreshLancs(); toast('Pagamento registrado!');
-  }catch(e){toast('Erro ao salvar.');}
+  }catch(e){ if(e.code!=='sessao_invalida') toast('Erro ao salvar.'); console.error(e); }
   finally{setBusy(false);}
 });
 
@@ -712,10 +748,10 @@ $('btn-del-cliente').addEventListener('click',async()=>{
   if(!confirm(`Excluir "${c.nome}" e todo o histórico?`)) return;
   setBusy(true);
   try{
-    await deleteCliente(c.id);
+    await excluirCliente(c.id);
     clientes=clientes.filter(x=>x.id!==c.id);
     closeAll(); render(); toast('Cliente removido');
-  }catch(e){toast('Erro ao excluir.');}
+  }catch(e){ if(e.code!=='sessao_invalida') toast('Erro ao excluir.'); console.error(e); }
   finally{setBusy(false);}
 });
 
@@ -738,11 +774,12 @@ $('file-import').addEventListener('change',async e=>{
       if(!confirm(`Importar ${list.length} cliente(s)? Substitui os dados atuais.`)) return;
       setBusy(true);
       try{
-        for(const c of clientes) await deleteCliente(c.id);
-        for(const c of list) await insertCliente({id:c.id,usuario_id:currentUser.id,nome:c.nome,saldo:Number(c.saldo)||0,last_update:c.last_update||today()});
-        clientes=list.map(c=>({...c,saldo:Number(c.saldo)||0}));
+        // manda só os campos necessários; o banco apaga os atuais e insere tudo de uma vez
+        const enviar=list.map(c=>({nome:c.nome,saldo:Number(c.saldo)||0,last_update:c.last_update||today()}));
+        const rows=await importarBackup(enviar);
+        clientes=rows.map(r=>({...r,saldo:Number(r.saldo)}));
         render(); toast('Backup importado!');
-      }catch(e){toast('Erro ao importar.');}
+      }catch(e){ if(e.code!=='sessao_invalida') toast('Erro ao importar.'); console.error(e); }
       finally{setBusy(false);}
     }catch{alert('Arquivo inválido.');}
   };
@@ -753,13 +790,15 @@ $('file-import').addEventListener('change',async e=>{
 ['new-valor','compra-valor','pag-valor'].forEach(id=>moneyFmt($(id)));
 
 // ===== INIT =====
-const savedUserId = sessionStorage.getItem('userId');
+// limpa resto da versão antiga (guardava só o id, sem token)
+sessionStorage.removeItem('userId');
+
+const savedToken = sessionStorage.getItem('token');
 const savedUserName = sessionStorage.getItem('userName');
-if(savedUserId && savedUserName){
-  // já estava logado nessa sessão
-  currentUser = {id:savedUserId, nome:savedUserName};
-  $('screen-login').style.display='none';
-  enterApp(currentUser);
+if(savedToken && savedUserName){
+  // já estava logado nessa sessão; se o token venceu, o banco avisa e volta pro login
+  token = savedToken;
+  enterApp({ nome: savedUserName });
 } else {
   loadLogin();
 }
